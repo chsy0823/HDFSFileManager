@@ -39,7 +39,7 @@ class InstanceItem(models.Model):
 				instance = None
 				for obj in docs:
 					#objectItem =  JSONEncoder().encode(docs)
-					instance = {"url":obj["url"], "instance_id":obj["instance_id"], "category_id":obj["instance_category"], "category_name":obj["instance_name"]}
+					instance = {"url":obj["url"], "instance_id":obj["instance_id"], "file_id":obj["file_id"], "crawl_name":obj["instance_name"]}
 
 				if instance != None:
 					instanceList.append(instance)
