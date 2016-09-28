@@ -22,24 +22,48 @@ class InstanceItem(models.Model):
 		self.db = self.connection.crawler_db
 		self.collection  = self.db.urls
 
-	def getInstanceItems(self, dirname, offset=0):
+	def removeFileFromPath(self,path) :
 
-		i = 0
-		ls_list = hdfs.ls(dirname)
+		ls_list = hdfs.lsl(path)
+		ls_count = len(ls_list)
+
+		if ls_count != 0 :
+			hdfs.rmr(path,"hdfs")
+
+	def getInstanceList_model(self,dirname):
+
+		ls_list = hdfs.lsl(dirname)
 		ls_count = len(ls_list)
 		instanceList = []
 
 		for item in ls_list:
-			splitName = item.split("_")
+
+			splitName = item["name"].split("/")
 			if len(splitName) > 0 :
-				fullName = splitName[1]
+				instanceFolderName = splitName[len(splitName)-1]
+				item["name"] = instanceFolderName
+				instanceList.append(item)
+
+		return instanceList
+
+	def getInstanceItems_model(self, dirname, offset=0):
+
+		i = 0
+		ls_list = hdfs.lsl(dirname)
+		ls_count = len(ls_list)
+		instanceList = []
+
+		for item in ls_list:
+			splitName = item["name"].split("/")
+			if len(splitName) > 0 :
+				fullName = splitName[len(splitName)-1]
 				instanceID = fullName.split(".")[0]
 
-				docs = self.collection.find({"instance_id":instanceID})
+				docs = self.collection.find({"file_id":instanceID})
 				instance = None
 				for obj in docs:
 					#objectItem =  JSONEncoder().encode(docs)
-					instance = {"url":obj["url"], "instance_id":obj["instance_id"], "file_id":obj["file_id"], "crawl_name":obj["instance_name"]}
+					instance = {"url":obj["url"], "instance_id":obj["instance_id"], "file_id":obj["file_id"], "crawl_name":obj["instance_name"], "hdfs_path":dirname+"/"+obj["file_id"]+".jpg"}
 
 				if instance != None:
 					instanceList.append(instance)

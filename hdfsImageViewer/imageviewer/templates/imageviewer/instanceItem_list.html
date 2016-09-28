@@ -1,0 +1,94 @@
+{% include "imageviewer/include/header.html" %}
+
+    <script>
+    $(document).ready(function(){
+
+        $('#myTable').DataTable();
+        $("#myTable").css("display","block");
+
+    });
+    </script>
+
+    <div class="container">
+
+      	<div class="starter-template">
+        	<h1>Manage files list of [{{category_name}}]</h1>
+            <button type="button" class="btn btn-primary" style="float:left;" onclick="history.back(-1);">Back</button>
+            <button type="button" class="btn btn-danger" style="display:none;float:right;" id="delete_button">Delete</button>
+            <br>
+            <br>
+            <form name="formObj2" id="formObj2" action="{% url 'remove_list' %}" method="post">{% csrf_token %}
+                <input type="hidden" name="deleteInstance" value="true"/>
+                <input type="hidden" name="path" value=""/>
+                <input type="hidden" id="crawl_name" name="crawl_name" value=""/>
+			<table id="myTable" style="display:none;">
+		    	<thead>
+		      	<tr>
+					<th>Select</th>
+					<th>Image</th>
+			        <th>Crawl name</th>
+			        <th>Instance ID</th>
+			        <th>File name</th>
+					<th>url</th>
+			    </tr>
+		    	</thead>
+		    	<tbody>
+
+					{% for instance in list %}
+						<tr>
+							<td><div class="checkbox"><label><input type="checkbox" class="ckbox" name="deleteChk" value="{{instance.hdfs_path}}" categoryname="{{category_name}}"> </label></div></td>
+					        <td><img src="{{ instance.url }}" class="img-fluid" alt="Responsive image" width="150"></td>
+					        <td>{{ instance.crawl_name }}</td>
+					        <td>{{ instance.instance_id }}</td>
+							<td>{{ instance.file_id }}</td>
+							<td><a href="{{ instance.url }}">Go URL</a></td>
+			      		</tr>
+			        {% endfor %}
+
+		    	</tbody>
+		  	</table>
+            </form>
+      	</div>
+
+    </div><!-- /.container -->
+
+
+    <script>
+    var count = 0;
+    var hiddenDelete = true;
+    $("#delete_button").click(function(){
+        if(count > 0) {
+
+            var categoryname = $(this).attr("categoryname");
+            $("#crawl_name").val(categoryname);
+            $("#formObj2").submit();
+        }
+    });
+
+    $(".ckbox").change(function(){
+        console.log(count);
+        console.log($(this).is(":checked"));
+
+        if($(this).is(":checked")) {
+            if(hiddenDelete) {
+                hiddenDelete = false;
+                $("#delete_button").css("display","block");
+            }
+            count++;
+        }
+        else {
+            count--;
+
+            if(count == 0) {
+                hiddenDelete = true;
+                $("#delete_button").css("display","none");
+            }
+        }
+    });
+    </script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+</body>
+</html>

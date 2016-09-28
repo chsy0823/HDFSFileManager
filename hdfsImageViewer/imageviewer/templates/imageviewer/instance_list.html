@@ -1,0 +1,49 @@
+{% include "imageviewer/include/header.html" %}
+
+
+<script>
+$(document).ready(function(){
+    $(".instance_item").click(function(){
+        var id = $(this).attr("id");
+        $("#crawl_name").val(id);
+        $("#formObj").submit();
+    });
+});
+</script>
+
+    <div class="container">
+
+      	<div class="starter-template">
+        	<h1>Instance List</h1>
+            <br>
+			<table class="table">
+		    	<thead>
+		      	<tr>
+					<th>Name</th>
+                    <th>Kind</th>
+					<th>owner</th>
+                    <th>last_mod</th>
+			    </tr>
+		    	</thead>
+		    	<tbody>
+                    <form name="formObj" id="formObj" action="{% url 'instanceItem_list' %}" method="post">{% csrf_token %}
+                        <input type="hidden" id="crawl_name" name="crawl_name" value=""/>
+                    
+					{% for instance in list %}
+						<tr class="instance_item" id="{{ instance.name }}">
+					        <td>{{ instance.name }}</td>
+					        <td>{{ instance.kind }}</td>
+							<td>{{ instance.owner }}</td>
+							<td>{{ instance.last_mod }}</td>
+			      		</tr>
+			        {% endfor %}
+                    </form>
+		    	</tbody>
+		  	</table>
+      	</div>
+
+    </div><!-- /.container -->
+
+
+</body>
+</html>
