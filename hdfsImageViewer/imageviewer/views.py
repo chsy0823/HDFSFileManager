@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import InstanceItem
+import json
 
 def getInstanceList(request):
 
@@ -17,7 +18,7 @@ def getInstanceItems(request):
     #user.insert("temp","1234","yong",1,"01098569155")
     lst = instance.getInstanceItems_model("/tmp/crawler/"+categoryName)
 
-    return render(request, 'imageviewer/instanceItem_list.html', {'category_name':categoryName, 'list':lst, 'list_size':len(lst)})
+    return render(request, 'imageviewer/instanceItem_list.html', {'category_name':categoryName, 'list':lst, 'list_size':len(lst), 'list_json':json.dumps(lst)})
 
 def removeInstance(request):
 
@@ -28,7 +29,7 @@ def removeInstance(request):
 
     for path in checkList :
         instance.removeFileFromPath(path)
-    
+
     return render(request, 'imageviewer/remove_list.html', {})
 
 # Create your views here.

@@ -3,7 +3,7 @@
     <script>
     $(document).ready(function(){
 
-        $('#myTable').DataTable();
+        // $('#myTable').DataTable();
         $("#myTable").css("display","block");
 
     });
@@ -12,9 +12,9 @@
     <div class="container">
 
       	<div class="starter-template">
-        	<h1>Manage files list of [{{category_name}}]</h1>
+        	<h1>Manage [{{category_name}}] Total : {{list_size}}</h1>
             <button type="button" class="btn btn-primary" style="float:left;" onclick="history.back(-1);">Back</button>
-            <button type="button" class="btn btn-danger" style="display:none;float:right;" id="delete_button">Delete</button>
+
             <br>
             <br>
             <form name="formObj2" id="formObj2" action="{% url 'remove_list' %}" method="post">{% csrf_token %}
@@ -37,7 +37,7 @@
 					{% for instance in list %}
 						<tr>
 							<td><div class="checkbox"><label><input type="checkbox" class="ckbox" name="deleteChk" value="{{instance.hdfs_path}}" categoryname="{{category_name}}"> </label></div></td>
-					        <td><img src="{{ instance.url }}" class="img-fluid" alt="Responsive image" width="150"></td>
+					        <td><img src="" id="img_{{instance.file_id}}" class="img-fluid" alt="Responsive image" width="150"></td>
 					        <td>{{ instance.crawl_name }}</td>
 					        <td>{{ instance.instance_id }}</td>
 							<td>{{ instance.file_id }}</td>
@@ -54,8 +54,50 @@
 
 
     <script>
+
     var count = 0;
     var hiddenDelete = true;
+    var listsize = "{{list_size}}";
+    listsize*=1;
+    var list = JSON.parse("{{list_json|escapejs}}");
+
+    function loadRecursive(index) {
+        console.log("index = "+index);
+        var img = new Image(),
+            url = list[index].url;
+            file_id = list[index].file_id;
+        var timer;
+
+        img.onload = function () {
+
+            clearTimer();
+            $("#img_"+file_id).attr("src",url)
+
+            if(index+1 < listsize)
+                loadRecursive(index+1);
+        };
+
+        function clearTimer() {
+            if (timer) {
+                clearTimeout(timer);
+                timer = null;
+            }
+        }
+
+        function skip() {
+            clearTimer();
+            if(index+1 < listsize)
+                loadRecursive(index+1);
+        }
+        timer = setTimeout(function() {
+            skip();
+        },5000);
+
+        img.src = url;
+    }
+
+    loadRecursive(0);
+
     $("#delete_button").click(function(){
         if(count > 0) {
 
