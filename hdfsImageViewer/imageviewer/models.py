@@ -52,21 +52,24 @@ class InstanceItem(models.Model):
 		ls_list = hdfs.lsl(dirname)
 		ls_count = len(ls_list)
 		instanceList = []
+		file_id_list = []
 
 		for item in ls_list:
+
 			splitName = item["name"].split("/")
+
 			if len(splitName) > 0 :
 				fullName = splitName[len(splitName)-1]
 				instanceID = fullName.split(".")[0]
-
-				docs = self.collection.find({"file_id":instanceID})
 				instance = None
-				for obj in docs:
-					#objectItem =  JSONEncoder().encode(docs)
-					instance = {"url":obj["url"], "instance_id":obj["instance_id"], "file_id":obj["file_id"], "crawl_name":obj["instance_name"], "hdfs_path":dirname+"/"+obj["file_id"]+".jpg"}
+				file_id_list.append(instanceID)
 
-				if instance != None:
-					instanceList.append(instance)
+		docs = self.collection.find({"file_id": {"$in": file_id_list}})
+
+		for obj in docs:
+				#objectItem =  JSONEncoder().encode(docs)
+				instance = {"url":obj["url"], "instance_id":obj["instance_id"], "file_id":obj["file_id"], "crawl_name":obj["instance_name"], "hdfs_path":dirname+"/"+obj["file_id"]+".jpg"}
+				instanceList.append(instance)
 
 
 		return instanceList
