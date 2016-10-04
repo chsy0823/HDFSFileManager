@@ -14,7 +14,7 @@
       	<div class="starter-template">
         	<h1>Manage files list of [{{category_name}}]</h1>
             <button type="button" class="btn btn-primary" style="float:left;" onclick="history.back(-1);">Back</button>
-            <button type="button" class="btn btn-danger" style="display:none;float:right;" id="delete_button">Delete</button>
+            <button type="button" class="delete_button btn btn-danger" style="display:none;float:right;">Delete</button>
             <br>
             <br>
             <form name="formObj2" id="formObj2" action="{% url 'remove_list' %}" method="post">{% csrf_token %}
@@ -47,6 +47,8 @@
 
 		    	</tbody>
 		  	</table>
+
+            <button type="button" class="delete_button btn btn-danger" style="display:none;float:right;">Delete</button>
             </form>
       	</div>
 
@@ -56,7 +58,7 @@
     <script>
     var count = 0;
     var hiddenDelete = true;
-    $("#delete_button").click(function(){
+    $(".delete_button").click(function(){
         if(count > 0) {
 
             var categoryname = $(this).attr("categoryname");
@@ -72,7 +74,7 @@
         if($(this).is(":checked")) {
             if(hiddenDelete) {
                 hiddenDelete = false;
-                $("#delete_button").css("display","block");
+                $(".delete_button").css("display","block");
             }
             count++;
         }
@@ -81,7 +83,7 @@
 
             if(count == 0) {
                 hiddenDelete = true;
-                $("#delete_button").css("display","none");
+                $(".delete_button").css("display","none");
             }
         }
     });
