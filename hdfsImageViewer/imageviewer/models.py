@@ -20,7 +20,7 @@ class InstanceItem(models.Model):
 	def connectDB(self):
 		self.connection = pymongo.MongoClient("localhost", 27017)
 		self.db = self.connection.crawler_db
-		self.collection  = self.db.urlCollection
+		self.collection  = self.db.urlCollection_new
 
 	def removeFileFromPath(self,path) :
 

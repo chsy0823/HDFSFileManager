@@ -5,7 +5,7 @@ import json
 def getInstanceList(request):
 
     instance = InstanceItem()
-    lst = instance.getInstanceList_model("/tmp/crawler")
+    lst = instance.getInstanceList_model("/tmp/crawler_new")
 
     return render(request, 'imageviewer/instance_list.html', {'list':lst})
 
@@ -16,7 +16,7 @@ def getInstanceItems(request):
     categoryName = request.POST['crawl_name']
 
     #user.insert("temp","1234","yong",1,"01098569155")
-    lst = instance.getInstanceItems_model("/tmp/crawler/"+categoryName)
+    lst = instance.getInstanceItems_model("/tmp/crawler_new/"+categoryName)
 
     return render(request, 'imageviewer/instanceItem_list.html', {'category_name':categoryName, 'list':lst, 'list_size':len(lst), 'list_json':json.dumps(lst)})
 
