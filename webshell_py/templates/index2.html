@@ -7,10 +7,14 @@
 <body>
 <div class="container">
     <h2>Web Shell</h2>
+    <button id="learning" type="button" class="btn btn-primary">Start Learning</button>
+    <button id="stop" type="button" class="btn btn-primary" disabled>Stop</button>
+    <button id="gpu" type="button" class="btn btn-primary">Show GPU</button>
+    <button id="clear" type="button" class="btn btn-primary">Clear</button>
+    <br>
     <p id="msg" class="well">
     </p>
-    <button id="start" type="button" class="btn btn-primary">Start</button>
-    <button id="stop" type="button" class="btn btn-primary" disabled>Stop</button>
+    
 </div>
 <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.2/lodash.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
@@ -25,15 +29,26 @@
                     $("#msg").append(line + "<br>")
                     tail();
                 }
+                else {
+                    $("#learning").removeAttr('disabled');
+                    $("#stop").attr('disabled', 'disabled');
+                }
             })
         };
 
-        $("#start").click(function () {
-            $.post('/start')
+        $("#learning").click(function () {
+            $.post('/execute',{command: "learning"})
                     .done(function () {
                         console.log('start');
-                        $("#start").attr('disabled', 'disabled');
+                        $("#learning").attr('disabled', 'disabled');
                         $("#stop").removeAttr('disabled');
+                        tail();
+                    });
+        });
+
+        $("#gpu").click(function () {
+            $.post('/execute',{command: "showGPU"})
+                    .done(function () {
                         tail();
                     });
         });
@@ -42,10 +57,13 @@
             $.post('/stop')
                     .done(function () {
                         console.log('stop');
-                        $("#start").removeAttr('disabled');
+                        $("#learning").removeAttr('disabled');
                         $("#stop").attr('disabled', 'disabled');
                     })
         })
+        $("#clear").click(function() {
+            $("#msg").html("");
+        });
     });
 
 </script>

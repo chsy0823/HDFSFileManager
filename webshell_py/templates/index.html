@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Web Shell</h2>
+    <button id="classify" type="button" class="btn btn-primary">Run Classify</button>
+    <button id="demo" type="button" class="btn btn-primary">Run Demo</button>
+    <button id="stop" type="button" class="btn btn-primary" disabled>Stop</button>
+    <button id="gpu" type="button" class="btn btn-primary">Show GPU</button>
+    <button id="clear" type="button" class="btn btn-primary">Clear</button>
+    <br>
+    <p id="msg" class="well">
+    </p>
+    
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.2/lodash.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        var tail = function () {
+            $.post('/tail').done(function (line) {
+                console.log(line);
+
+                if (line != "") {
+                    $("#msg").append(line + "<br>")
+                    tail();
+                }
+                else {
+                    $("#classify").removeAttr('disabled');
+                    $("#demo").removeAttr('disabled');
+                    $("#stop").attr('disabled', 'disabled');
+                }
+            })
+        };
+
+        $("#classify").click(function () {
+            $.post('/execute',{command: "classify"})
+                    .done(function () {
+                        console.log('start');
+                        $("#classify").attr('disabled', 'disabled');
+                        $("#demo").attr('disabled', 'disabled');
+                        $("#stop").removeAttr('disabled');
+                        tail();
+                    });
+        });
+
+        $("#demo").click(function () {
+            $.post('/execute',{command: "demo"})
+                    .done(function () {
+                        console.log('start');
+                        $("#demo").attr('disabled', 'disabled');
+                        $("#classify").attr('disabled', 'disabled');
+                        $("#stop").removeAttr('disabled');
+                        tail();
+                    });
+        });
+        $("#gpu").click(function () {
+            $.post('/execute',{command: "showGPU"})
+                    .done(function () {
+                        tail();
+                    });
+        });
+
+        $("#stop").click(function () {
+            $.post('/stop')
+                    .done(function () {
+                        console.log('stop');
+                        $("#classify").removeAttr('disabled');
+                        $("#demo").removeAttr('disabled');
+                        $("#stop").attr('disabled', 'disabled');
+                    })
+        })
+        $("#clear").click(function() {
+            $("#msg").html("");
+        });
+    });
+
+</script>
+</body>
+</html>

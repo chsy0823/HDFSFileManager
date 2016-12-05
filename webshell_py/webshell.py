@@ -1,12 +1,14 @@
 import subprocess
 
 import fcntl
+import os
 
 import asyncio
 from flask import Flask
 from flask import json
 from flask import render_template
 from flask import session
+from flask import request
 
 SH_FILE_RECOG = "/usr/share/nginx/html/webshell/classify.sh"
 SH_FILE_DEMO = "/usr/share/nginx/html/webshell/classify.sh"
@@ -21,16 +23,38 @@ proc = None
 def index():
     return render_template('index.html')
 
-@app.route('/start', methods=['POST'])
-def start():
+@app.route("/recognize")
+def recognizeView():
+    return render_template('index.html')
+
+@app.route("/learning")
+def learningView():
+    return render_template('index2.html')
+
+@app.route('/execute', methods=['POST'])
+def executeCommand():
     # session['output'] = []
-    SH_FILE = SH_FILE_RECOG
-	p = subprocess.Popen(['bash', SH_FILE], stdout=subprocess.PIPE)
+
+    cmd = request.form["command"]
+    line = ""
+
+    if cmd == "classify" :
+        line = SH_FILE_RECOG
+        p = subprocess.Popen(['bash', line], stdout=subprocess.PIPE)
+    elif cmd == "learning":
+        line = SH_FILE_LEARN
+        p = subprocess.Popen(['bash', line], stdout=subprocess.PIPE)
+    elif cmd == "demo":
+        line = SH_FILE_DEMO
+        p = subprocess.Popen(['bash', line], stdout=subprocess.PIPE)
+    elif cmd == "showGPU" :
+        line = "nvidia-smi"
+        p = subprocess.Popen(['nvidia-smi'], stdout=subprocess.PIPE)
+    
     global proc
     proc = p
 
     return "start"
-
 
 @app.route('/stop', methods=['POST'])
 def stop():
