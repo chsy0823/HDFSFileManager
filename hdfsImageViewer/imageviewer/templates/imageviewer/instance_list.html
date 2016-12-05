@@ -8,6 +8,9 @@ $(document).ready(function(){
         $("#crawl_name").val(id);
         $("#formObj").submit();
     });
+
+    $(".tmenu").removeClass("active");
+    $("#menu_home").addClass("active");
 });
 </script>
 
@@ -28,7 +31,7 @@ $(document).ready(function(){
 		    	<tbody>
                     <form name="formObj" id="formObj" action="{% url 'instanceItem_list' %}" method="post">{% csrf_token %}
                         <input type="hidden" id="crawl_name" name="crawl_name" value=""/>
-                    
+
 					{% for instance in list %}
 						<tr class="instance_item" id="{{ instance.name }}">
 					        <td>{{ instance.name }}</td>

@@ -31,7 +31,10 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{% url 'instance_list' %}">Home</a></li>
+            <li id="menu_home" class="tmenu active"><a href="{% url 'instance_list' %}">Home</a></li>
+			<li id="menu_rc" class="tmenu"><a href="{% url 'wtRecognize' %}">Recognizing Console</a></li>
+			<li id="menu_lc" class="tmenu"><a href="{% url 'wtLearning' %}">Leanring Console</a></li>
+			<li id="menu_wt" class="tmenu"><a href="{% url 'webTerminal' %}">Web Terminal</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#contact">Contact</a></li>
 			<li><button type="button" class="btn btn-danger" style="display:none;" id="delete_button">Delete</button></li>

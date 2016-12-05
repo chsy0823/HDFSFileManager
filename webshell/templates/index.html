@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Web Shell</h2>
+    <p id="msg" class="well">
+    </p>
+    <button id="start" type="button" class="btn btn-primary">Start</button>
+    <button id="stop" type="button" class="btn btn-primary" disabled>Stop</button>
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.2/lodash.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        var tail = function () {
+            $.post('/tail').done(function (line) {
+                console.log(line);
+
+                if (line != "") {
+                    $("#msg").append(line + "<br>")
+                    tail();
+                }
+            })
+        };
+
+        $("#start").click(function () {
+            $.post('/start')
+                    .done(function () {
+                        console.log('start');
+                        $("#start").attr('disabled', 'disabled');
+                        $("#stop").removeAttr('disabled');
+                        tail();
+                    });
+        });
+
+        $("#stop").click(function () {
+            $.post('/stop')
+                    .done(function () {
+                        console.log('stop');
+                        $("#start").removeAttr('disabled');
+                        $("#stop").attr('disabled', 'disabled');
+                    })
+        })
+    });
+
+</script>
+</body>
+</html>

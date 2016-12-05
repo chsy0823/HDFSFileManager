@@ -32,4 +32,12 @@ def removeInstance(request):
 
     return render(request, 'imageviewer/remove_list.html', {})
 
+def wtRecognize(request):
+    return render(request, 'imageviewer/web_terminal_recognize.html', {})
+
+def wtLearning(request):
+    return render(request, 'imageviewer/web_terminal_learning.html', {})
+
+def webTerminal(request):
+    return render(request, 'imageviewer/webTerminal.html', {})
 # Create your views here.
